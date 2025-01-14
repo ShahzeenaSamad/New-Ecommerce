@@ -1,10 +1,12 @@
 "use client"
-import { useCart } from "./CartContext"; 
-import { Link } from "react-router-dom";
+
+
 import Image from "next/image";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FiMinus } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa6";
+import { useCart } from "./cartContext";
+import Link from "next/link";
 
 const CartPage = () => {
   const { cart, removeFromCart, increment, decrement } = useCart();
@@ -19,7 +21,7 @@ const CartPage = () => {
           {cart.length === 0 ? (
             <div className="text-center mt-10">
               <p>Your cart is empty.</p>
-              <Link to="/" className="text-blue-500">Continue shopping</Link>
+              <Link href="/" className="text-blue-500">Continue shopping</Link>
             </div>
           ) : (
             cart.map((item) => (
@@ -82,7 +84,7 @@ const CartPage = () => {
 
           {/* Proceed to Checkout Button */}
           <div className="flex justify-center">
-            <Link to="/checkout">
+            <Link href="/checkout">
               <button className="w-full py-2 px-4 bg-black text-white rounded-full text-lg">
                 Proceed to Checkout
               </button>

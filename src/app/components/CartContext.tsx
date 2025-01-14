@@ -1,5 +1,4 @@
-"use client"
-// CartContext.tsx
+"use client";
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
 // Define the structure of the Cart Item
@@ -8,9 +7,9 @@ interface CartItem {
   title: string;
   price: number;
   quantity: number;
-  image:string;
-  size:number;
-  color:string;
+  image: string;
+  size: number;
+  color: string;
 }
 
 // Define the structure of the Cart Context
@@ -27,8 +26,10 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  // Define cart state with correct type
   const [cart, setCart] = useState<CartItem[]>([]);
 
+  // Add item to cart
   const addToCart = (product: CartItem) => {
     setCart((prevCart) => {
       const existingProductIndex = prevCart.findIndex((item) => item.id === product.id);
@@ -43,13 +44,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  // Remove item from cart
   const removeFromCart = (id: number) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
+  // Clear the cart
   const clearCart = () => {
     setCart([]);
   };
+
+  // Increment quantity of item
   const increment = (id: number) => {
     setCart((prevCart) => {
       return prevCart.map((item) =>
@@ -58,6 +63,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  // Decrement quantity of item
   const decrement = (id: number) => {
     setCart((prevCart) => {
       return prevCart.map((item) =>
@@ -68,30 +74,27 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-
-  // Function to get total item count in the cart
+  // Get the total item count in the cart
   const getCartItemCount = () => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
   return (
     <CartContext.Provider
-    value={{
-      cart,
-      addToCart,
-      removeFromCart,
-      increment,
-      decrement,
-      clearCart,
-      getCartItemCount,
-    }}
-  >
-    {children}
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        increment,
+        decrement,
+        clearCart,
+        getCartItemCount,
+      }}
+    >
+      {children}
     </CartContext.Provider>
   );
 };
-   
-
 
 // Custom hook to use cart context
 export const useCart = () => {

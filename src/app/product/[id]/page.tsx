@@ -1,62 +1,69 @@
-"use client";
 
+
+"use client";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";  
-import { useCart } from "../components/cartContext"; 
+import { useParams } from 'next/navigation';
+import { useCart } from '../../components/cartContext'; // Import useCart hook
 import Image from "next/image";
-import Link from "next/link";
+import Link from "next/link"; // Import Link for navigation
 
 interface Product {
-  category: string;
-  description: string;
   id: number;
   title: string;
   price: number;
+  description: string;
   image: string;
+  category: string;
   rating: {
     rate: number;
     count: number;
   };
 }
 
-
-const ProductDetail = () => {
-  const { id } = useParams();  // Get the id from the URL
-  const { addToCart } = useCart(); // Accessing the addToCart method from the context
+const ProductDetailPage = () => {
+  const { id } = useParams();  // Get the product ID from the URL
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getProduct = async () => {
-      setLoading(true);
-      const response = await fetch(`https://fakestoreapi.com/products/${id}`);
-      const data = await response.json();
-      setProduct(data);
-      setLoading(false);
-    };
+  // Get the addToCart function from the CartContext
+  const { addToCart } = useCart(); 
 
-    getProduct();
+  useEffect(() => {
+    if (id) {
+      const fetchProduct = async () => {
+        const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+        const data = await res.json();
+        setProduct(data);
+        setLoading(false);
+      };
+
+      fetchProduct();
+    }
   }, [id]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // Render star rating
-  const renderRating = (rate: number) => {
-    const filledStars = Array(Math.floor(rate)).fill("★");
-    const emptyStars = Array(5 - Math.floor(rate)).fill("☆");
-    return [...filledStars, ...emptyStars].join(" ");
+  // Render rating stars based on the rating value
+  const renderRating = (rating: number) => {
+    const stars = Math.round(rating);
+    return "★".repeat(stars) + "☆".repeat(5 - stars); // Render stars
   };
-  // Add to cart handler
+
   const handleAddToCart = () => {
     if (product) {
-      addToCart({
-        id: product.id, title: product.title, price: product.price, quantity: 1,
+      const cartItem = {
+        id: product.id,
+        title: product.title,
+        price: product.price,
         image: product.image,
-        size: 0,
-        color: ""
-      });
+        quantity: 1,   // You can customize this, maybe based on user input
+        size: 0,       // Here, size is a number (set it to a default number, like 0)
+        color: "",     // You can set default color or let user choose
+      };
+
+      addToCart(cartItem);  // Add the new cart item with the required fields
     }
   };
 
@@ -64,7 +71,6 @@ const ProductDetail = () => {
     <div className="container my-5 py-5 px-4">
       {product && (
         <div className="flex justify-center">
-          {/* Product Image */}
           <div className="w-1/2 p-4">
             <Image
               src={product.image}
@@ -75,22 +81,21 @@ const ProductDetail = () => {
             />
           </div>
 
-          {/* Product Details */}
           <div className="w-1/2 p-4">
-            {/* Category Text (Positioned at the Top) */}
+            {/* Product Category */}
             <p className="text-sm text-gray-600 font-semibold mb-2">{product.category}</p>
 
             {/* Product Title */}
             <h1 className="text-4xl font-bold mb-4">{product.title}</h1>
 
             {/* Product Price */}
-            <p className="text-xl font-bold text-gray-600 mb-4">
-              $ {product.price}
-            </p>
+            <p className="text-xl font-bold text-gray-600 mb-4">${product.price}</p>
 
-            {/* Rating */}
+            {/* Product Rating */}
             <div className="mb-4">
-              <span className="text-yellow-500 font-bold">{renderRating(product.rating.rate)}</span>
+              <span className="text-yellow-500 font-bold">
+                {renderRating(product.rating.rate)}
+              </span>
               <span className="ml-2 text-gray-500">({product.rating.count} reviews)</span>
             </div>
 
@@ -108,7 +113,10 @@ const ProductDetail = () => {
               </button>
 
               {/* Go to Cart Button */}
-              <Link href="/cart" className="btn bg-green-500 text-white hover:bg-green-700 py-2 px-4 rounded-lg mt-4">
+              <Link
+                href="/cart"
+                className="btn bg-green-500 text-white hover:bg-green-700 py-2 px-4 rounded-lg mt-4"
+              >
                 Go to Cart
               </Link>
             </div>
@@ -119,4 +127,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default ProductDetailPage;

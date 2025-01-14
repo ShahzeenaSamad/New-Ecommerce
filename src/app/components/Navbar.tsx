@@ -1,11 +1,12 @@
 
-"use client";
 
 "use client";
 import React from "react";
-import { Link } from "react-router-dom";
-import { useCart } from "./CartContext"; // Import useCart to access cart data
+
+ // Import useCart to access cart data
 import { FaShoppingCart } from "react-icons/fa"; // Import the cart icon
+import { useCart } from "./cartContext";
+import Link from "next/link";
 
 const Navbar = () => {
   const { getCartItemCount } = useCart(); // Access the method to get cart item count
@@ -15,16 +16,16 @@ const Navbar = () => {
     <div className="max-w-screen-xl mx-auto px-6 py-4 flex justify-between items-center">
       {/* Logo */}
       <div className="text-white text-3xl font-bold tracking-wide">
-        <Link to="/" className="hover:text-gray-200 transition-colors">
+        <Link href="/" className="hover:text-gray-200 transition-colors">
           <span className="text-yellow-400">Shop</span>Style
         </Link>
       </div>
 
         {/* Navbar Links */}
         <div className="flex space-x-6 ml-auto">
-          <Link to="/" className="text-lg hover:text-yellow-400 font-bold transition-all duration-300">Home</Link>
-          <Link to="/products" className="text-lg hover:text-yellow-400 font-bold transition-all duration-300">Products</Link>
-          <Link to="/contact" className="text-lg hover:text-yellow-400 font-bold transition-all duration-300">Contact</Link>
+          <Link href="/" className="text-lg hover:text-yellow-400 font-bold transition-all duration-300">Home</Link>
+          <Link href="/products" className="text-lg hover:text-yellow-400 font-bold transition-all duration-300">Products</Link>
+          <Link href="/contact" className="text-lg hover:text-yellow-400 font-bold transition-all duration-300">Contact</Link>
            
            {/* Search Bar */}
         <div className="relative hidden md:flex">
@@ -39,7 +40,7 @@ const Navbar = () => {
         </div>
 
           {/* Cart Link with cart icon and item count */}
-          <Link to="/cart" className="relative flex items-center">
+          <Link href="/cart" className="relative flex items-center">
             <FaShoppingCart className="text-2xl mr-2 hover:text-yellow-400 transition-all duration-300" />
             {/* Cart item count */}
             <span
