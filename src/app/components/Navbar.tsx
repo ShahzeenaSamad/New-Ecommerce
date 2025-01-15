@@ -5,7 +5,7 @@ import React from "react";
 
  // Import useCart to access cart data
 import { FaShoppingCart } from "react-icons/fa"; // Import the cart icon
-import { useCart } from "./cartContext";
+import { useCart } from "./CartContext";
 import Link from "next/link";
 
 const Navbar = () => {

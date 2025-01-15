@@ -5,7 +5,7 @@ import Image from "next/image";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FiMinus } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa6";
-import { useCart } from "./cartContext";
+import { useCart } from "./CartContext";
 import Link from "next/link";
 
 const CartPage = () => {

@@ -3,7 +3,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from 'next/navigation';
-import { useCart } from '../../components/cartContext'; // Import useCart hook
+import { useCart } from '../../components/CartContext'; // Import useCart hook
 import Image from "next/image";
 import Link from "next/link"; // Import Link for navigation
 

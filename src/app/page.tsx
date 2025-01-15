@@ -1,6 +1,6 @@
 // pages/index.tsx
 
-import HeroSection from "./components/hero";
+import HeroSection from "./components/Hero";
 import ProductsPage from "./products/page";
 
 
