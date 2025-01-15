@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";  
-import { useCart } from "../components/cartContext"; 
+import { useCart } from "./cartContext"; 
 import Image from "next/image";
 import Link from "next/link";
 
