@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link"; // For linking to individual product detail page
+import Link from "next/link";
 import Image from "next/image";
 
 interface Product {
@@ -8,32 +8,45 @@ interface Product {
   title: string;
   price: number;
   image: string;
-  category: string; // Added category field
+  category: string;
 }
 
 const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   // Fetch products from API
-  useEffect(() => {
-    const fetchProducts = async () => {
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
       const res = await fetch("https://fakestoreapi.com/products");
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
       const data = await res.json();
+
+      // Debugging: Log fetched data
+      console.log("Fetched Products:", data);
+
       setProducts(data);
       setFilteredProducts(data); // Initially, show all products
 
       // Extract unique categories from products
       const uniqueCategories = [
-        ...new Set(data.map((product: Product) => product.category)),
+        ...new Set(
+          data.map((product: Product) => product.category).filter(Boolean) // Exclude undefined/null categories
+        ),
       ] as string[]; // Explicitly cast to string[]
       setCategories(uniqueCategories);
-    };
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
-    fetchProducts();
-  }, []);
+  fetchProducts();
+}, []);
 
   // Handle category filter
   const handleCategoryChange = (category: string) => {
@@ -41,48 +54,26 @@ const ProductList = () => {
     if (category === "All") {
       setFilteredProducts(products); // Show all products
     } else {
-      const filtered = products.filter(
-        (product) => product.category === category
-      );
+      const filtered = products.filter((product) => product.category === category);
       setFilteredProducts(filtered); // Filter products by category
     }
   };
 
   return (
     <div className="container mx-auto px-4 py-6">
-      {/* Button Filters */}
+      {/* Category Filter Buttons */}
       <div className="flex justify-center mb-5 pb-5 space-x-4">
-        <button
-          className="btn btn-outline-dark hover:bg-gray-700 hover:text-white py-2 px-4 rounded-lg transition-all"
-          onClick={() => handleCategoryChange("All")} // Show all products
-        >
-          All
-        </button>
-        <button
-          className="btn btn-outline-dark hover:bg-gray-700 hover:text-white py-2 px-4 rounded-lg transition-all"
-          onClick={() => handleCategoryChange("men's clothing")} // Filter by Men's Clothing
-        >
-          Men's Clothing
-        </button>
-        <button
-          className="btn btn-outline-dark hover:bg-gray-700 hover:text-white py-2 px-4 rounded-lg transition-all"
-          onClick={() => handleCategoryChange("women's clothing")} // Filter by Women's Clothing
-        >
-          Women's Clothing
-        </button>
-        <button
-          className="btn btn-outline-dark hover:bg-gray-700 hover:text-white py-2 px-4 rounded-lg transition-all"
-          onClick={() => handleCategoryChange("jewelery")} // Filter by Jewelry
-        >
-          Jewelry
-        </button>
-        <button
-          className="btn btn-outline-dark hover:bg-gray-700 hover:text-white py-2 px-4 rounded-lg transition-all"
-          onClick={() => handleCategoryChange("electronics")} // Filter by Electronics
-        >
-          Electronics
-        </button>
-       
+        {["All", ...categories].map((category) => (
+          <button
+            key={category}
+            className={`btn btn-outline-dark hover:bg-gray-700 hover:text-white py-2 px-4 rounded-lg transition-all ${
+              selectedCategory === category ? "bg-gray-700 text-white" : "text-black"
+            }`}
+            onClick={() => handleCategoryChange(category)}
+          >
+            {category}
+          </button>
+        ))}
       </div>
 
       {/* Product Grid */}
@@ -101,9 +92,7 @@ const ProductList = () => {
                 <h5 className="card-title text-lg font-semibold truncate">
                   {product.title}
                 </h5>
-                <p className="card-text text-gray-600 font-bold text-xl">
-                  ${product.price}
-                </p>
+                <p className="card-text text-gray-600 font-bold text-xl">${product.price}</p>
                 <Link href={`/product/${product.id}`}>
                   <p className="btn bg-blue-500 text-white hover:bg-blue-700 py-2 px-4 rounded-lg mt-4 inline-block w-full text-center">
                     View Details
